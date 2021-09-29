@@ -8,6 +8,7 @@ const db = openDatabase({
   name: "base_de_datos_correo",
 });
 
+// HOLAAAAAAA
 const DesvincularScreen = () => {
   const [correo, setCorreo] = useState("");
   const [listaCorreos, setlistaCorreos] = useState([]);
