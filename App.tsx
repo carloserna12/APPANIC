@@ -9,6 +9,7 @@ import VincularScreen from './src/Screens/VincularScreen/VincularScreen';
 const Stack = createNativeStackNavigator()
 
 export default function App(){
+  
   return(
     <NavigationContainer>
       <Stack.Navigator initialRouteName="MainScreen">

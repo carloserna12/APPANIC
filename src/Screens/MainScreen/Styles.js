@@ -8,17 +8,15 @@ const styles = StyleSheet.create({
         backgroundColor:'white',
         alignItems:'center',
         
-    },
-    
+    },   
     perfilPicture:{
         backgroundColor:'white',
         width:90,
         height:90,
         marginTop:2,
-        left:'74%',
-        
-        
+        left:'74%',  
     },
+    
     //Barra donde se encuentra los botones vincular y desvincular
     barraDeBotones:{
         backgroundColor:'#75c7ff',
