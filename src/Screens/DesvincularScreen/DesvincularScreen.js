@@ -13,19 +13,8 @@ const DesvincularScreen = () => {
   const [correo, setCorreo] = useState("");
   const [listaCorreos, setlistaCorreos] = useState([]);
 
-  const createTables = () => {
-    db.transaction(txn => {
-      txn.executeSql(
-        `CREATE TABLE IF NOT EXISTS listaCorreos (id INTEGER PRIMARY KEY AUTOINCREMENT, name VARCHAR(40) NOT NULL,CONSTRAINT name UNIQUE(name))`,
-        [],
-        (sqlTxn, res) => {
-          console.log("Tabla creada");
-        },
-        error => {
-          console.log("error al crear tabla " + error.message);
-        },
-      );
-    });
+  const openTables = () => {
+    db.transaction(txn => {});
   };
   const deleteCorreo = () => {
     if (!correo) {
@@ -93,7 +82,7 @@ const DesvincularScreen = () => {
   };
 
   useEffect(async () => {
-    await createTables();
+    await openTables();
     await getCorreos();
   }, []);
 
