@@ -1,7 +1,7 @@
 import React from 'react';
 import { Text, View, StatusBar, TextInput, Button, FlatList } from 'react-native';
 import { useState, useEffect } from "react";
-import Styles from './Styles';
+//import Styles from './Styles';
 import { openDatabase } from "react-native-sqlite-storage";
 
 const db = openDatabase({
@@ -13,6 +13,20 @@ const DesvincularScreen = () => {
   const [correo, setCorreo] = useState("");
   const [listaCorreos, setlistaCorreos] = useState([]);
 
+  const createTables = () => {
+    db.transaction(txn => {
+      txn.executeSql(
+        `CREATE TABLE IF NOT EXISTS listaCorreos (id INTEGER PRIMARY KEY AUTOINCREMENT, name VARCHAR(40) NOT NULL,CONSTRAINT name UNIQUE(name))`,
+        [],
+        (sqlTxn, res) => {
+          console.log("Tabla creada");
+        },
+        error => {
+          console.log("error al crear tabla " + error.message);
+        },
+      );
+    });
+  };
   const deleteCorreo = () => {
     if (!correo) {
       alert("Agregue el ID");
@@ -21,15 +35,16 @@ const DesvincularScreen = () => {
 
     db.transaction(txn => {
       txn.executeSql(
-        `DELETE FROM listaCorreos WHERE id`,
+        `DELETE  FROM  listaCorreos WHERE id=(?)`,
         [correo],
         (sqlTxn, res) => {
-          alert(`${correo} el correo fue elminado`)
+          alert(`correo elminado`)
           console.log(`${correo} el correo fue eliminado correctamente`);
           getCorreos();
           setCorreo("");
         },
         error => {
+          console.log(correo)
           console.log("error al eliminar el correo " + error.message);
         },
       );
