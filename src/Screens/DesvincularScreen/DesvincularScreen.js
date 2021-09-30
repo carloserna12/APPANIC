@@ -16,6 +16,7 @@ const DesvincularScreen = () => {
   const openTables = () => {
     db.transaction(txn => {});
   };
+  
   const deleteCorreo = () => {
     if (!correo) {
       alert("Agregue el ID");

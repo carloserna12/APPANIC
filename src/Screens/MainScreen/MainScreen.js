@@ -3,24 +3,26 @@ import { Text, TouchableHighlight, View, Linking,useState} from 'react-native';
 import Styles from './Styles'
 import { openDatabase } from "react-native-sqlite-storage";
 
+
 const db = openDatabase({
   name: "base_de_datos_correo",
 });
 
 
 const MainScreen = ({navigation}) =>{
+  
+  //Funcion toma todos los correos de la base de datos y los guarda en un arreglo
   const getCorreos = () => {
     db.transaction(txn => {
       txn.executeSql(
         `SELECT * FROM listaCorreos ORDER BY id DESC`,
         [],
         (sqlTxn, res) => {
-          let len = res.rows.length;
+          let len = res.rows.length; //len guarda la cantidad de elementos de la tabla
           if (len > 0) {
             let listEmails = [];
             for (let i = 0; i < len; i++) {
-              let item = res.rows.item(i);
-              listEmails.push(item.name);
+              listEmails.push(res.rows.item(i).name);//listEmails guarda solo los correos sin el id
             }
             sendEmail((listEmails));
           }
@@ -31,7 +33,12 @@ const MainScreen = ({navigation}) =>{
       );
     });
   };
- 
+
+  const getUbicacion =() =>{
+    
+  }
+
+  //Funcion que envia el email a la lista de correos 
   const sendEmail = (to) =>{
     Linking.openURL(`mailto:${to}?subject=AYUDA&body=Necesito ayuda, por favor, estoy en {encontrarCoordenadas}`)
   };
@@ -40,8 +47,7 @@ const MainScreen = ({navigation}) =>{
 
 
   return (
-    
-    
+    //botones de la interfaz
     <View style={Styles.container}>
         <View style={Styles.barraDeBotones}>  
           <View style={Styles.perfilPicture}></View>

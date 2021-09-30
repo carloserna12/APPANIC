@@ -9,9 +9,11 @@ const db = openDatabase({
 });
 
 const VincularScreen = () => {
+  //Aqui se guardan los estados de correo y lista de correos
   const [correo, setCorreo] = useState("");
   const [listaCorreos, setlistaCorreos] = useState([]);
 
+  //Aqui se crea la tabla 
   const createTables = () => {
     db.transaction(txn => {
       txn.executeSql(
@@ -27,6 +29,7 @@ const VincularScreen = () => {
     });
   };
 
+  //Aqui se añade el correo 
   const addCorreo = () => {
     if (!correo) {
       alert("Agregue el correo");
@@ -50,6 +53,7 @@ const VincularScreen = () => {
     });
   };
 
+  //Toma la tabla y todos los elementos los agrega a un array
   const getCorreos = () => {
     db.transaction(txn => {
       txn.executeSql(
@@ -76,6 +80,7 @@ const VincularScreen = () => {
     });
   };
 
+  //Dibuja el elemento de la lista actual de correos 
   const renderCorreo = ({ item }) => {
     return (
       <View style={{
