@@ -8,6 +8,7 @@ import DesvincularScreen from './src/Screens/DesvincularScreen/DesvincularScreen
 const Stack = createNativeStackNavigator()
 
 export default function App(){
+
   
   return(
     <NavigationContainer>

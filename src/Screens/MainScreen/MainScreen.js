@@ -1,12 +1,14 @@
 import React from 'react';
-import { Text, TouchableHighlight, View, Linking,useState} from 'react-native';
+import { Text, TouchableHighlight, View, Linking, Alert} from 'react-native';
+import { useState, useEffect } from "react";
 import Styles from './Styles'
 import { openDatabase } from "react-native-sqlite-storage";
-
-
+import Geolocation from'@react-native-community/geolocation';
 const db = openDatabase({
   name: "base_de_datos_correo",
 });
+
+//Geolocation.getCurrentPosition(info => console.log(info));
 
 
 const MainScreen = ({navigation}) =>{
@@ -32,15 +34,29 @@ const MainScreen = ({navigation}) =>{
         },
       );
     });
-  };
+  }; 
 
-  const getUbicacion =() =>{
-    
+
+  let resultado = [];
+  const componentDidMount =()=> {
+    Geolocation.getCurrentPosition(
+      (position) => {
+        resultado.push(JSON.stringify(position));
+      },
+      error => Alert.alert('Error', JSON.stringify(error)),
+      {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000},
+    );
   }
+
+  useEffect(async () => {
+    await componentDidMount();
+  }, []);
 
   //Funcion que envia el email a la lista de correos 
   const sendEmail = (to) =>{
-    Linking.openURL(`mailto:${to}?subject=AYUDA&body=Necesito ayuda, por favor, estoy en {encontrarCoordenadas}`)
+    componentDidMount();
+    Linking.openURL(`mailto:${to}?subject=AYUDA&body=Necesito ayuda, por favor, estoy en ${resultado}`)
+
   };
 
   
