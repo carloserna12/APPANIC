@@ -8,8 +8,6 @@ const db = openDatabase({
   name: "base_de_datos_correo",
 });
 
-//Geolocation.getCurrentPosition(info => console.log(info));
-
 
 const MainScreen = ({navigation}) =>{
   
@@ -37,16 +35,18 @@ const MainScreen = ({navigation}) =>{
   }; 
 
 
-  let resultado = [];
+  var resultado = [];
   const componentDidMount =()=> {
     Geolocation.getCurrentPosition(
       (position) => {
-        resultado.push(JSON.stringify(position));
+        resultado.push("\nFecha y Hora\n",new Date,"\nPosicion:\n",JSON.stringify(position),"\n");
       },
       error => Alert.alert('Error', JSON.stringify(error)),
       {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000},
     );
   }
+
+  Geolocation.getCurrentPosition(info =>(console.log(info.coords.latitude)))
 
   useEffect(async () => {
     await componentDidMount();
@@ -55,8 +55,12 @@ const MainScreen = ({navigation}) =>{
   //Funcion que envia el email a la lista de correos 
   const sendEmail = (to) =>{
     componentDidMount();
-    Linking.openURL(`mailto:${to}?subject=AYUDA&body=Necesito ayuda, por favor, estoy en ${resultado}`)
-
+    const a = new Date()
+   // Linking.openURL(`mailto:${to}?subject=AYUDA&body=Necesito ayuda, por favor, hora y fecha ${a}estoy en ${resultado}`)
+    Linking.openURL(
+      `mailto:${to}
+      ?subject=APPPANIC(alerta de ayuda)
+      &body=Se a recibido una señal de alerta:\ninformacion:\n${resultado}\n`)
   };
 
   
