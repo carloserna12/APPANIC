@@ -1,59 +1,46 @@
 import React from 'react';
 import { Text, View, StatusBar, TextInput, Button, FlatList } from 'react-native';
 import { useState, useEffect } from "react";
-import Styles from './Styles';
+//import Styles from './Styles';
 import { openDatabase } from "react-native-sqlite-storage";
 
 const db = openDatabase({
   name: "base_de_datos_correo",
 });
 
-const VincularScreen = () => {
-  //Aqui se guardan los estados de correo y lista de correos
+// HOLAAAAAAA
+const DesvincularScreen = () => {
   const [correo, setCorreo] = useState("");
   const [listaCorreos, setlistaCorreos] = useState([]);
 
-  //Aqui se crea la tabla 
-  const createTables = () => {
-    db.transaction(txn => {
-      txn.executeSql(
-        `CREATE TABLE IF NOT EXISTS listaCorreos (id INTEGER PRIMARY KEY AUTOINCREMENT, name VARCHAR(40) NOT NULL,CONSTRAINT name UNIQUE(name))`,
-        [],
-        (sqlTxn, res) => {
-          console.log("Tabla creada");
-        },
-        error => {
-          console.log("error al crear tabla " + error.message);
-        },
-      );
-    });
+  const openTables = () => {
+    db.transaction(txn => {});
   };
-
-  //Aqui se añade el correo 
-  const addCorreo = () => {
+  
+  const deleteCorreo = () => {
     if (!correo) {
-      alert("Agregue el correo");
+      alert("Agregue el ID");
       return false;
     }
 
     db.transaction(txn => {
       txn.executeSql(
-        `INSERT INTO listaCorreos (name) VALUES (?)`,
+        `DELETE  FROM  listaCorreos WHERE id=(?)`,
         [correo],
         (sqlTxn, res) => {
-          alert(`${correo} fue agregado correctamente`)
-          console.log(`${correo} fue agregado correctamente`);
+          alert(`correo elminado`)
+          console.log(`${correo} el correo fue eliminado correctamente`);
           getCorreos();
           setCorreo("");
         },
         error => {
-          console.log("error al agregar el correo " + error.message);
+          console.log(correo)
+          console.log("error al eliminar el correo " + error.message);
         },
       );
     });
   };
 
-  //Toma la tabla y todos los elementos los agrega a un array
   const getCorreos = () => {
     db.transaction(txn => {
       txn.executeSql(
@@ -80,7 +67,6 @@ const VincularScreen = () => {
     });
   };
 
-  //Dibuja el elemento de la lista actual de correos 
   const renderCorreo = ({ item }) => {
     return (
       <View style={{
@@ -97,20 +83,20 @@ const VincularScreen = () => {
   };
 
   useEffect(async () => {
-    await createTables();
+    await openTables();
     await getCorreos();
   }, []);
 
   return (
     <View>
       <TextInput
-        placeholder="Digite correo electronico"
+        placeholder="Digite ID para borrar"
         value={correo}
         onChangeText={setCorreo}
         style={{ marginHorizontal: 8 }}
       />
 
-      <Button title="Agregar" onPress={addCorreo} />
+      <Button title="Eliminar" onPress={deleteCorreo} />
 
       <FlatList
         data={listaCorreos}
@@ -121,4 +107,4 @@ const VincularScreen = () => {
   );
 };
 
-export default VincularScreen;
+export default DesvincularScreen;
