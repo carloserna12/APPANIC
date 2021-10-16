@@ -10,7 +10,15 @@ const db = openDatabase({
 
 
 const MainScreen = ({navigation}) =>{
+  var [latitude, setLatitude] = useState("");
+  var [longitude, setLongitude] = useState("");
+  var [altitud, setAltitud] = useState("");
+  var resultado = [];
+  var contadorAlertas = 0;
+  var copia = [];
+ 
   
+
   //Funcion toma todos los correos de la base de datos y los guarda en un arreglo
   const getCorreos = () => {
     db.transaction(txn => {
@@ -25,6 +33,7 @@ const MainScreen = ({navigation}) =>{
               listEmails.push(res.rows.item(i).name);//listEmails guarda solo los correos sin el id
             }
             sendEmail((listEmails));
+            copia = listEmails;
           }
         },
         error => {
@@ -35,36 +44,49 @@ const MainScreen = ({navigation}) =>{
   }; 
 
 
-  var resultado = [];
   const componentDidMount =()=> {
     Geolocation.getCurrentPosition(
       (position) => {
-        resultado.push("\nFecha y Hora\n",new Date,"\nPosicion:\n",JSON.stringify(position),"\n");
+        latitude = position.coords.latitude;
+        longitude = position.coords.longitude;
+        altitud = position.coords.altitude;
+        contadorAlertas++;
+        setLatitude();
+        setLongitude();
+        setAltitud();
+        resultado.push("\nAlerta#",contadorAlertas,"\nFecha/Hora:",new Date,"\nPosicion:\nLatitud:",latitude,"\nLongitud:",longitude,"\nAltitud:",altitud,"\n");
       },
       error => Alert.alert('Error', JSON.stringify(error)),
       {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000},
     );
   }
 
-  Geolocation.getCurrentPosition(info =>(console.log(info.coords.latitude)))
 
   useEffect(async () => {
     await componentDidMount();
   }, []);
 
+
+
   //Funcion que envia el email a la lista de correos 
   const sendEmail = (to) =>{
     componentDidMount();
-    const a = new Date()
-   // Linking.openURL(`mailto:${to}?subject=AYUDA&body=Necesito ayuda, por favor, hora y fecha ${a}estoy en ${resultado}`)
     Linking.openURL(
       `mailto:${to}
       ?subject=APPPANIC(alerta de ayuda)
       &body=Se a recibido una señal de alerta:\ninformacion:\n${resultado}\n`)
   };
 
-  
-
+  //Funcion que envia mensaje de calma
+  const calmButton = () =>{
+    componentDidMount();
+    contadorAlertas = 0;
+    resultado = [];
+    Linking.openURL(
+      `mailto:${copia}
+      ?subject=APPPANIC(alerta de calma)
+      &body=Se a recibido una señal de calma:\nultima alerta:\n"\nFecha/Hora:",${new Date},"\nPosicion:\nLatitud:",${latitude},"\nLongitud:",${longitude},"\nAltitud:",${altitud},"\n"}\n`)
+  };
 
   return (
     //botones de la interfaz
@@ -81,7 +103,7 @@ const MainScreen = ({navigation}) =>{
         <TouchableHighlight style={Styles.panicButton} onPress={getCorreos}>
             <Text style={Styles.textPanicButton}>PANIC</Text>  
         </TouchableHighlight>
-        <TouchableHighlight style={Styles.calmButton} onPress={() => navigation.navigate('Vincular')}>
+        <TouchableHighlight style={Styles.calmButton} onPress={calmButton}>
             <Text style={Styles.textCalmButton}>CALM</Text>  
         </TouchableHighlight>
     </View>
